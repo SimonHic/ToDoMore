@@ -29,7 +29,7 @@ fun AppNavGraph(navController: NavHostController, modifier: Modifier = Modifier)
         ){ backStackEntry ->
             val taskIdString = backStackEntry.arguments?.getString("taskId") ?: "-1"
             val taskId = taskIdString.toLongOrNull() ?: -1L
-            TaskEditScreen(taskId = taskId)
+            TaskEditScreen(navController = navController,taskId = taskId)
         }
         composable("about"){
             AboutScreen()

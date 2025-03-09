@@ -39,7 +39,7 @@ fun TaskListScreen(
         } else {
             Column(modifier = Modifier.fillMaxWidth()) {
                 sampleTasks.forEach { task ->
-                    TaskItem(task = task, onClick = { navController.navigate("taskEdit/${task.id.toString()}") })
+                    TaskItem(task = task, onClick = { navController.navigate("taskEdit/${task.id}") })
                 }
             }
         }

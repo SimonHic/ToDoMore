@@ -21,16 +21,16 @@ fun BottomNavBar(navController: NavController){
         contentColor = MaterialTheme.colorScheme.onSecondary,
     ){
         NavigationBarItem(
-            icon = { Icon(Icons.Filled.Checklist, contentDescription = "Task List")},
-            label = {Text("Tasks")},
-            selected = false,
-            onClick = {navController.navigate("taskList")}
-        )
-        NavigationBarItem(
             icon = { Icon(Icons.Filled.Add, contentDescription = "Create Task")},
             label = {Text("Create")},
             selected = false,
             onClick = {navController.navigate("taskCreate")}
+        )
+        NavigationBarItem(
+            icon = { Icon(Icons.Filled.Checklist, contentDescription = "Task List")},
+            label = {Text("Tasks")},
+            selected = false,
+            onClick = {navController.navigate("taskList")}
         )
         NavigationBarItem(
             icon = { Icon(Icons.Filled.Info, contentDescription = "About")},
