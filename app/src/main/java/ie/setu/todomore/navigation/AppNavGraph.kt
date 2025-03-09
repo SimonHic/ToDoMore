@@ -23,7 +23,7 @@ fun AppNavGraph(navController: NavHostController, modifier: Modifier = Modifier)
             TaskListScreen(navController = navController)
         }
         composable("taskCreate"){
-            TaskCreateScreen()
+            TaskCreateScreen(navController = navController)
         }
         composable("taskEdit/{taskId}", arguments = listOf(navArgument("taskId"){type = NavType.StringType})
         ){ backStackEntry ->
