@@ -12,6 +12,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import ie.setu.todomore.data.TodoModel
 import ie.setu.todomore.data.Priority
 
@@ -26,8 +27,8 @@ val sampleTasks = mutableStateListOf(
 // Screen to showcase all tasks added
 @Composable
 fun TaskListScreen(
+    navController: NavController,
     modifier: Modifier = Modifier,
-    onClickTaskDetails: (Long) -> Unit = {}
 ){
     //Text(text = "Task List Screen")
     Column(modifier = modifier.padding(16.dp)) {
@@ -38,7 +39,7 @@ fun TaskListScreen(
         } else {
             Column(modifier = Modifier.fillMaxWidth()) {
                 sampleTasks.forEach { task ->
-                    TaskItem(task = task, onClick = { onClickTaskDetails(task.id) })
+                    TaskItem(task = task, onClick = { navController.navigate("taskEdit/${task.id.toString()}") })
                 }
             }
         }
@@ -64,5 +65,6 @@ fun TaskItem(task: TodoModel, onClick: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun TaskListScreenPreview() {
-    TaskListScreen()
+    val fakeNavController = androidx.navigation.compose.rememberNavController()
+    TaskListScreen(navController = fakeNavController)
 }

@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import ie.setu.todomore.navigation.AppNavGraph
+import ie.setu.todomore.ui.components.general.BottomNavBar
 import ie.setu.todomore.ui.theme.ToDoMoreTheme
 
 class MainActivity : ComponentActivity() {
@@ -32,6 +33,7 @@ fun ToDoMoreApp(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     Scaffold(
         modifier = modifier,
+        bottomBar = { BottomNavBar(navController)},
         content = { paddingValues ->
             AppNavGraph(
                 navController = navController,
