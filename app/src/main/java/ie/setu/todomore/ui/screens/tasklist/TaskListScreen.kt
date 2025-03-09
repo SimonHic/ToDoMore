@@ -13,8 +13,13 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,34 +27,40 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ie.setu.todomore.data.TodoModel
 import ie.setu.todomore.data.Priority
+import ie.setu.todomore.data.TodoJSONStore
 
-val sampleTasks = mutableStateListOf(
+/*val sampleTasks = mutableStateListOf(
     TodoModel(id = 1, title = "Buy Games", priority = Priority.HIGH),
     TodoModel(id = 2, title = "Finish assignment", priority = Priority.HIGH),
     TodoModel(id = 3, title = "Call Mother", priority = Priority.MEDIUM),
     TodoModel(id = 4, title = "Workout", priority = Priority.MEDIUM),
     TodoModel(id = 5, title = "Read a book", priority = Priority.LOW),
-)
+)*/
 
 // Screen to showcase all tasks added
 @Composable
-fun TaskListScreen(
-    navController: NavController,
-    modifier: Modifier = Modifier,
-){
-    //Text(text = "Task List Screen")
-    Column(modifier = modifier.padding(16.dp)) {
+fun TaskListScreen(navController: NavController){
+    val context = LocalContext.current
+    val todoStore = remember { TodoJSONStore(context) }
+    val tasks = remember { mutableStateListOf<TodoModel>().apply { addAll(todoStore.findAll()) }}
+
+    Column(modifier = Modifier.padding(16.dp)) {
         Text(text = "Task List", style = MaterialTheme.typography.headlineMedium)
 
-        if (sampleTasks.isEmpty()) {
+        if (tasks.isEmpty()) {
             Text(text = "No tasks available", modifier = Modifier.padding(top = 20.dp))
         } else {
             Column(modifier = Modifier.fillMaxWidth()) {
-                sampleTasks.forEach { task ->
+                tasks.forEach { task ->
                     TaskItem(
                         task = task,
                         onClick = { navController.navigate("taskEdit/${task.id}") },
-                        onLongClick = {toggleTaskDeletion(task.id)}
+                        onLongClick = {
+                            todoStore.toggleTaskDeletion(task.id)
+                            val index = tasks.indexOfFirst { it.id == task.id }
+                            if (index != -1)
+                                tasks[index] = tasks[index].copy(markForDel = !tasks[index].markForDel)
+                        }
                     )
                 }
             }
@@ -58,11 +69,14 @@ fun TaskListScreen(
 
         // Clear and Remove Completed Tasks Button
         Button(
-            onClick = {clearCompletedTasks()},
+            onClick = {
+                todoStore.deleteMarked()
+                tasks.removeAll{it.markForDel}
+            },
             modifier = Modifier.fillMaxWidth(),
 
             // Only enabled if tasks are marked, defaulted to false
-            enabled = sampleTasks.any {it.markForDel}
+            enabled = tasks.any {it.markForDel}
         ){
             Text("Clear Completed")
         }
@@ -98,18 +112,4 @@ fun TaskItem(task: TodoModel, onClick: () -> Unit, onLongClick: () -> Unit) {
 fun TaskListScreenPreview() {
     val fakeNavController = androidx.navigation.compose.rememberNavController()
     TaskListScreen(navController = fakeNavController)
-}
-
-// Toggle the 'markForDel' task parameter to true or false (default is false on creation)
-fun toggleTaskDeletion(taskId: Long){
-    val taskIndex = sampleTasks.indexOfFirst { it.id == taskId }
-    if (taskIndex != -1){
-        val task = sampleTasks[taskIndex]
-        sampleTasks[taskIndex] = task.copy(markForDel = !task.markForDel)
-    }
-}
-
-// Remove all completed tasks marked for deletion
-fun clearCompletedTasks(){
-    sampleTasks.removeAll {it.markForDel}
 }

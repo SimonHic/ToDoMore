@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ie.setu.todomore.data.Priority
 import ie.setu.todomore.data.TodoModel
-import ie.setu.todomore.ui.screens.tasklist.sampleTasks
+import ie.setu.todomore.data.TodoJSONStore
 
 // Screen to allow suers to create tasks
 @Composable
@@ -33,6 +33,7 @@ fun TaskCreateScreen(navController: NavController){
     var title by remember {mutableStateOf("")}
     var selectedPriority by remember { mutableStateOf(Priority.MEDIUM)}
     val context = LocalContext.current
+    val todoStore = remember { TodoJSONStore(context) }
 
     Column(modifier = Modifier.padding(16.dp)){
         Text(text = "Create New Task", style = MaterialTheme.typography.headlineMedium)
@@ -93,7 +94,7 @@ fun TaskCreateScreen(navController: NavController){
         Button(
             onClick = {
                 if (title.isNotBlank()){
-                    addTask(title, selectedPriority)
+                    todoStore.create(TodoModel(title = title, priority = selectedPriority))
                     navController.navigate("tasklist")
                 } else{
                     Toast.makeText(context, "Please enter a task title!!", Toast.LENGTH_SHORT).show()
@@ -105,9 +106,4 @@ fun TaskCreateScreen(navController: NavController){
             Text("Create Task")
         }
     }
-}
-
-fun addTask(title: String, priority: Priority){
-    val newTask = TodoModel(id = (sampleTasks.size +1).toLong(), title = title, priority = priority)
-    sampleTasks.add(newTask)
 }

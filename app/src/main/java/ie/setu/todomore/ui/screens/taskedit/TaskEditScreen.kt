@@ -24,16 +24,15 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ie.setu.todomore.data.Priority
 import ie.setu.todomore.data.TodoModel
-import ie.setu.todomore.ui.screens.taskcreate.addTask
-import ie.setu.todomore.ui.screens.tasklist.sampleTasks
+import ie.setu.todomore.data.TodoJSONStore
 
 // Screen to allow users to edit created tasks
 @Composable
 fun TaskEditScreen(navController: NavController, taskId: Long){
     //Text(text = "Task Edit Screen - Editing Task: $taskId")
     val context = LocalContext.current
-
-    val task = sampleTasks.find { it.id == taskId }
+    val todoStore = remember { TodoJSONStore(context) }
+    val task = todoStore.findById(taskId)
 
     if(task == null){
         Column ( modifier = Modifier.padding(16.dp)){
@@ -108,7 +107,7 @@ fun TaskEditScreen(navController: NavController, taskId: Long){
         Button(
             onClick = {
                 if (title.isNotBlank()){
-                    updateTask(taskId, title, selectedPriority)
+                    todoStore.update(taskId, title, selectedPriority)
                     navController.navigate("tasklist")
                 } else{
                     Toast.makeText(context, "Please enter a task title!!", Toast.LENGTH_SHORT).show()
@@ -119,12 +118,5 @@ fun TaskEditScreen(navController: NavController, taskId: Long){
         ){
             Text("Update Task")
         }
-    }
-}
-
-fun updateTask(taskId: Long, newTitle: String, newPriority: Priority){
-    val taskIndex = sampleTasks.indexOfFirst { it.id == taskId }
-    if (taskIndex != -1){
-        sampleTasks[taskIndex] = sampleTasks[taskIndex].copy(title = newTitle, priority = newPriority)
     }
 }
