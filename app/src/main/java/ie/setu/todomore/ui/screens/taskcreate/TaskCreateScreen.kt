@@ -49,20 +49,45 @@ fun TaskCreateScreen(navController: NavController){
 
         // Priority Handling
         Text(text = "Select Priority Level:")
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween){
-            Priority.values().forEach { priority ->
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly){
+            //Priority.values().forEach { priority ->
                 Button(
                     onClick = {
-                        selectedPriority = priority
-                        Toast.makeText(context, "Priority set to ${priority.name}", Toast.LENGTH_SHORT).show()
+                        selectedPriority = Priority.LOW
+                        Toast.makeText(context, "Priority set to Low", Toast.LENGTH_SHORT).show()
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = if (selectedPriority == priority) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
+                        containerColor = if (selectedPriority == Priority.LOW) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer
                     )
                 ) {
-                    Text(text = priority.toString())
+                    Text("Low")
                 }
-            }}
+
+                Button(
+                    onClick = {
+                        selectedPriority = Priority.MEDIUM
+                        Toast.makeText(context, "Priority set to Medium", Toast.LENGTH_SHORT).show()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (selectedPriority == Priority.MEDIUM) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer
+                    )
+                ) {
+                    Text("Medium")
+                }
+
+                Button(
+                    onClick = {
+                        selectedPriority = Priority.HIGH
+                        Toast.makeText(context, "Priority set to High", Toast.LENGTH_SHORT).show()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (selectedPriority == Priority.HIGH) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer
+                    )
+                ) {
+                    Text("High")
+                }
+
+        }
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
