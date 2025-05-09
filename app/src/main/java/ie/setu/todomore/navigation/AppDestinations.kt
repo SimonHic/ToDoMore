@@ -5,6 +5,8 @@ import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Details
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
@@ -44,5 +46,18 @@ object TaskEdit : AppDestination {
     )
 }
 
+object Login : AppDestination {
+    override val icon = Icons.AutoMirrored.Filled.Login
+    override val label = "Login"
+    override val route = "login"
+}
+
+object Register : AppDestination {
+    override val icon = Icons.Filled.AccountCircle
+    override val label = "Register"
+    override val route = "register"
+}
+
 val bottomAppBarDestinations = listOf(TaskCreate, TaskList, About)
-val allDestinations = listOf(TaskList, TaskCreate, About, TaskEdit)
+val userSignedOutDestinations = listOf(Login, Register)
+val allDestinations = listOf(TaskList, TaskCreate, About, TaskEdit, Login, Register)

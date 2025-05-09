@@ -15,10 +15,12 @@ import ie.setu.todomore.ui.screens.about.AboutScreen
 import ie.setu.todomore.ui.screens.taskcreate.TaskCreateScreen
 import ie.setu.todomore.ui.screens.taskedit.TaskEditScreen
 import ie.setu.todomore.ui.screens.tasklist.TaskListScreen
+import ie.setu.todomore.ui.screens.login.LoginScreen
+import ie.setu.todomore.ui.screens.register.RegisterScreen
 
 @Composable
 fun AppNavGraph(navController: NavHostController, modifier: Modifier = Modifier){
-    NavHost(navController = navController, startDestination = "tasklist", modifier = modifier){
+    NavHost(navController = navController, startDestination = Login.route, modifier = modifier){
         composable("taskList"){
             TaskListScreen(navController = navController)
         }
@@ -33,6 +35,12 @@ fun AppNavGraph(navController: NavHostController, modifier: Modifier = Modifier)
         }
         composable("about"){
             AboutScreen()
+        }
+        composable(Login.route){
+            LoginScreen(navController = navController)
+        }
+        composable(Register.route){
+            RegisterScreen(navController = navController)
         }
     }
 }
