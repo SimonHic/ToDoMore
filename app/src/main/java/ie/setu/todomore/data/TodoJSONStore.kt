@@ -1,3 +1,5 @@
+// TEMP DISABLE DUE TO FIRESTORE MIGRATION
+/*
 package ie.setu.todomore.data
 
 import android.content.Context
@@ -76,3 +78,4 @@ class TodoJSONStore(private val context: Context) {
     }
 }
 
+*/

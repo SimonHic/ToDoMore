@@ -1,3 +1,5 @@
+// TEMP DISABLE DUE TO FIRESTORE MIGRATION
+/*
 package ie.setu.todomore.data
 
 interface TodoStore {
@@ -17,3 +19,4 @@ interface TodoStore {
     // Delete an existing To-do task
     fun delete(todo: TodoModel)
 }
+*/

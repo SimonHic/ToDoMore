@@ -2,7 +2,7 @@ package ie.setu.todomore.data.rules
 
 object Constants {
     //Firebase
-    const val USER_EMAIL = "email"
+    const val USER_EMAIL = "userEmail"
     const val TASK_COLLECTION = "tasks"
 
     //User fields

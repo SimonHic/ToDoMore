@@ -13,6 +13,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -24,12 +26,14 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
 import ie.setu.todomore.data.TodoModel
 import ie.setu.todomore.data.Priority
-import ie.setu.todomore.data.TodoJSONStore
+//import ie.setu.todomore.data.TodoJSONStore
 import ie.setu.todomore.ui.components.general.TopAppBarProvider
+import androidx.compose.runtime.LaunchedEffect
 
 /*val sampleTasks = mutableStateListOf(
     TodoModel(id = 1, title = "Buy Games", priority = Priority.HIGH),
@@ -43,9 +47,24 @@ import ie.setu.todomore.ui.components.general.TopAppBarProvider
 @Composable
 fun TaskListScreen(navController: NavController){
     val context = LocalContext.current
-    val todoStore = remember { TodoJSONStore(context) }
-    val tasks = remember { mutableStateListOf<TodoModel>().apply { addAll(todoStore.findAll()) }}
+    val viewModel: TaskListViewModel = hiltViewModel()
+    val currentUserEmail = FirebaseAuth.getInstance().currentUser?.email
 
+    // Everytime Tasklist screen loads, get all tasks
+    LaunchedEffect(true) {
+        if(!currentUserEmail.isNullOrBlank()){
+            viewModel.getTasks()
+        }
+    }
+    val tasks = viewModel.uiTasks.collectAsState().value
+    val isClearButtonEnabled by remember(viewModel.uiTasks.collectAsState()){
+        derivedStateOf {
+            viewModel.uiTasks.value.any{it.markForDel}
+        }
+    }
+    /*val todoStore = remember { TodoJSONStore(context) }
+    val tasks = remember { mutableStateListOf<TodoModel>().apply { addAll(todoStore.findAll()) }}
+*/
     Column(modifier = Modifier.padding(16.dp)) {
 
         TopAppBarProvider(
@@ -66,13 +85,16 @@ fun TaskListScreen(navController: NavController){
                 tasks.forEach { task ->
                     TaskItem(
                         task = task,
-                        onClick = { navController.navigate("taskEdit/${task.id}") },
+                        onClick = { navController.navigate("taskEdit/${task._id}") },
                         onLongClick = {
-                            todoStore.toggleTaskDeletion(task.id)
-                            val index = tasks.indexOfFirst { it.id == task.id }
+                            viewModel.toggleMarkForDeletion(task._id)
+                        }
+                        /*onLongClick = {
+                            todoStore.toggleTaskDeletion(task._id)
+                            val index = tasks.indexOfFirst { it._id == task._id }
                             if (index != -1)
                                 tasks[index] = tasks[index].copy(markForDel = !tasks[index].markForDel)
-                        }
+                        }*/
                     )
                 }
             }
@@ -82,13 +104,16 @@ fun TaskListScreen(navController: NavController){
         // Clear and Remove Completed Tasks Button
         Button(
             onClick = {
+                viewModel.clearMarkedTasks()},
+            enabled = isClearButtonEnabled,
+            /*onClick = {
                 todoStore.deleteMarked()
                 tasks.removeAll{it.markForDel}
-            },
+            },*/
             modifier = Modifier.fillMaxWidth(),
 
             // Only enabled if tasks are marked, defaulted to false
-            enabled = tasks.any {it.markForDel}
+            //enabled = tasks.any {it.markForDel}
         ){
             Text("Clear Completed")
         }

@@ -29,9 +29,10 @@ fun AppNavGraph(navController: NavHostController, startDestination: String, modi
         }
         composable("taskEdit/{taskId}", arguments = listOf(navArgument("taskId"){type = NavType.StringType})
         ){ backStackEntry ->
-            val taskIdString = backStackEntry.arguments?.getString("taskId") ?: "-1"
+            TaskEditScreen(navController = navController)
+            /*val taskIdString = backStackEntry.arguments?.getString("taskId") ?: "-1"
             val taskId = taskIdString.toLongOrNull() ?: -1L
-            TaskEditScreen(navController = navController,taskId = taskId)
+            TaskEditScreen(navController = navController,taskId = taskId)*/
         }
         composable("about"){
             AboutScreen(navController = navController)
@@ -45,7 +46,7 @@ fun AppNavGraph(navController: NavHostController, startDestination: String, modi
     }
 }
 
-private fun NavHostController.navigateToTaskEdit(taskId: Long) {
-    this.navigate("taskEdit/${taskId}")
+private fun NavHostController.navigateToTaskEdit(taskId: String) {
+    this.navigate("taskEdit/$taskId")
 }
 

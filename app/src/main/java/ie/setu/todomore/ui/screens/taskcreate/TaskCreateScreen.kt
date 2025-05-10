@@ -21,10 +21,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import ie.setu.todomore.data.Priority
 import ie.setu.todomore.data.TodoModel
-import ie.setu.todomore.data.TodoJSONStore
 import com.google.firebase.auth.FirebaseAuth
 import ie.setu.todomore.navigation.TaskCreate
 import ie.setu.todomore.ui.components.general.TopAppBarProvider
@@ -36,7 +36,8 @@ fun TaskCreateScreen(navController: NavController){
     var title by remember {mutableStateOf("")}
     var selectedPriority by remember { mutableStateOf(Priority.MEDIUM)}
     val context = LocalContext.current
-    val todoStore = remember { TodoJSONStore(context) }
+    val viewModel: TaskCreateViewModel = hiltViewModel()
+    //val todoStore = remember { TodoJSONStore(context) }
     val navigateUp: () -> Unit = {navController.navigateUp()}
 
     Column(modifier = Modifier.padding(16.dp)){
@@ -107,8 +108,13 @@ fun TaskCreateScreen(navController: NavController){
         Button(
             onClick = {
                 if (title.isNotBlank()){
-                    todoStore.create(TodoModel(title = title, priority = selectedPriority))
-                    navController.navigate("tasklist")
+                    val newTask = TodoModel(title = title, priority = selectedPriority)
+                    viewModel.insert(newTask){
+                        navController.popBackStack()
+                    //navController.navigate("tasklist")
+                    }
+                    /*todoStore.create(TodoModel(title = title, priority = selectedPriority))
+                    navController.navigate("tasklist")*/
                 } else{
                     Toast.makeText(context, "Please enter a task title!!", Toast.LENGTH_SHORT).show()
                 }

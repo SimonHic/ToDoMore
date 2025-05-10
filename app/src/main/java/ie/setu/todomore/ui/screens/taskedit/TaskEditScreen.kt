@@ -21,21 +21,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import ie.setu.todomore.data.Priority
 import ie.setu.todomore.data.TodoModel
-import ie.setu.todomore.data.TodoJSONStore
 import com.google.firebase.auth.FirebaseAuth
 import ie.setu.todomore.ui.components.general.TopAppBarProvider
 import ie.setu.todomore.navigation.TaskEdit
 
 // Screen to allow users to edit created tasks
 @Composable
-fun TaskEditScreen(navController: NavController, taskId: Long){
+fun TaskEditScreen(navController: NavController){
     //Text(text = "Task Edit Screen - Editing Task: $taskId")
     val context = LocalContext.current
-    val todoStore = remember { TodoJSONStore(context) }
-    val task = todoStore.findById(taskId)
+    //val todoStore = remember { TodoJSONStore(context) }
+    val viewModel: TaskEditViewModel = hiltViewModel()
+    val task = viewModel.task.value
+    //val task = todoStore.findById(taskId)
     val navigateUp: () -> Unit = {navController.navigateUp()}
 
     if(task == null){
@@ -120,8 +122,11 @@ fun TaskEditScreen(navController: NavController, taskId: Long){
         Button(
             onClick = {
                 if (title.isNotBlank()){
-                    todoStore.update(taskId, title, selectedPriority)
-                    navController.navigate("tasklist")
+                    viewModel.updateTask(task.copy(title = title, priority = selectedPriority)){
+                        navController.navigate("tasklist")
+                    }
+                    /*todoStore.update(taskId, title, selectedPriority)
+                    navController.navigate("tasklist")*/
                 } else{
                     Toast.makeText(context, "Please enter a task title!!", Toast.LENGTH_SHORT).show()
                 }
