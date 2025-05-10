@@ -16,6 +16,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import ie.setu.todomore.navigation.AppNavGraph
 import ie.setu.todomore.ui.components.general.BottomNavBar
 import ie.setu.todomore.ui.theme.ToDoMoreTheme
+import com.google.firebase.auth.FirebaseAuth
+import ie.setu.todomore.navigation.Login
+import ie.setu.todomore.navigation.TaskList
+import androidx.compose.runtime.LaunchedEffect
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -33,12 +37,20 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ToDoMoreApp(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
+
+    // Only run once per composition
+    LaunchedEffect(key1 = true) {
+        FirebaseAuth.getInstance().signOut()
+    }
+    val startDestination = Login.route
+
     Scaffold(
         modifier = modifier,
         bottomBar = { BottomNavBar(navController)},
         content = { paddingValues ->
             AppNavGraph(
                 navController = navController,
+                startDestination = startDestination,
                 modifier = Modifier.padding(paddingValues)
             )
         }

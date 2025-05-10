@@ -19,8 +19,8 @@ import ie.setu.todomore.ui.screens.login.LoginScreen
 import ie.setu.todomore.ui.screens.register.RegisterScreen
 
 @Composable
-fun AppNavGraph(navController: NavHostController, modifier: Modifier = Modifier){
-    NavHost(navController = navController, startDestination = Login.route, modifier = modifier){
+fun AppNavGraph(navController: NavHostController, startDestination: String, modifier: Modifier = Modifier){
+    NavHost(navController = navController, startDestination = startDestination, modifier = modifier){
         composable("taskList"){
             TaskListScreen(navController = navController)
         }
@@ -34,7 +34,7 @@ fun AppNavGraph(navController: NavHostController, modifier: Modifier = Modifier)
             TaskEditScreen(navController = navController,taskId = taskId)
         }
         composable("about"){
-            AboutScreen()
+            AboutScreen(navController = navController)
         }
         composable(Login.route){
             LoginScreen(navController = navController)

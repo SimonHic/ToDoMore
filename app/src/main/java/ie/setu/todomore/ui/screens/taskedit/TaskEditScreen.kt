@@ -25,6 +25,9 @@ import androidx.navigation.NavController
 import ie.setu.todomore.data.Priority
 import ie.setu.todomore.data.TodoModel
 import ie.setu.todomore.data.TodoJSONStore
+import com.google.firebase.auth.FirebaseAuth
+import ie.setu.todomore.ui.components.general.TopAppBarProvider
+import ie.setu.todomore.navigation.TaskEdit
 
 // Screen to allow users to edit created tasks
 @Composable
@@ -33,6 +36,7 @@ fun TaskEditScreen(navController: NavController, taskId: Long){
     val context = LocalContext.current
     val todoStore = remember { TodoJSONStore(context) }
     val task = todoStore.findById(taskId)
+    val navigateUp: () -> Unit = {navController.navigateUp()}
 
     if(task == null){
         Column ( modifier = Modifier.padding(16.dp)){
@@ -48,6 +52,15 @@ fun TaskEditScreen(navController: NavController, taskId: Long){
     var title by remember { mutableStateOf(task.title) }
     var selectedPriority by remember { mutableStateOf(task.priority) }
     Column(modifier = Modifier.padding(16.dp)){
+        TopAppBarProvider(
+            navController = navController,
+            currentScreen = TaskEdit,
+            canNavigateBack = true,
+            email = FirebaseAuth.getInstance().currentUser?.email?:"",
+            name = FirebaseAuth.getInstance().currentUser?.displayName?:"",
+            navigateUp = navigateUp
+        )
+        Spacer(modifier = Modifier.height(16.dp))
         Text(text= "Edit Task", style = MaterialTheme.typography.headlineMedium)
 
         // Task title input field

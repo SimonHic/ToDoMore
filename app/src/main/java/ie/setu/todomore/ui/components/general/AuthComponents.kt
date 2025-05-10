@@ -467,6 +467,30 @@ fun ClickableLoginTextComponent(tryingToLogin: Boolean = true, onTextSelected: (
         }
     }
 
+    // Modify to inlcude newer text later
+
+    ClickableText(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = 40.dp),
+        style = TextStyle(
+            fontSize = 21.sp,
+            fontWeight = FontWeight.Normal,
+            fontStyle = FontStyle.Normal,
+            textAlign = TextAlign.Center
+        ),
+        text = annotatedString,
+        onClick = { offset ->
+            annotatedString.getStringAnnotations(offset, offset)
+                .firstOrNull()?.also { span ->
+                    Log.d("ClickableTextComponent", "{${span.item}}")
+                    if (span.item == loginText) {
+                        onTextSelected(span.item)
+                    }
+                }
+        },
+    )
+
 //    ClickableText(
 //        modifier = Modifier
 //            .fillMaxWidth()
@@ -511,6 +535,7 @@ fun UnderLinedTextComponent(value: String) {
 
 }
 
+// Using TopAppBarProvider for content
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppToolbar(

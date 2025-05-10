@@ -25,6 +25,9 @@ import androidx.navigation.NavController
 import ie.setu.todomore.data.Priority
 import ie.setu.todomore.data.TodoModel
 import ie.setu.todomore.data.TodoJSONStore
+import com.google.firebase.auth.FirebaseAuth
+import ie.setu.todomore.navigation.TaskCreate
+import ie.setu.todomore.ui.components.general.TopAppBarProvider
 
 // Screen to allow suers to create tasks
 @Composable
@@ -34,8 +37,18 @@ fun TaskCreateScreen(navController: NavController){
     var selectedPriority by remember { mutableStateOf(Priority.MEDIUM)}
     val context = LocalContext.current
     val todoStore = remember { TodoJSONStore(context) }
+    val navigateUp: () -> Unit = {navController.navigateUp()}
 
     Column(modifier = Modifier.padding(16.dp)){
+        TopAppBarProvider(
+            navController = navController,
+            currentScreen = TaskCreate,
+            canNavigateBack = true,
+            email = FirebaseAuth.getInstance().currentUser?.email?:"",
+            name = FirebaseAuth.getInstance().currentUser?.displayName?:"",
+            navigateUp = navigateUp
+        )
+
         Text(text = "Create New Task", style = MaterialTheme.typography.headlineMedium)
 
         // Task title input

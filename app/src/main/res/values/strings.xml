@@ -13,4 +13,7 @@
     <string name="first_name">First Name</string>
     <string name="terms_and_conditions">I accept the Terms and Conditions</string>
     <string name="register">Register</string>
+
+    <string name="already_have_account_login">Already have an account? <u>Login</u></string>
+    <string name="dont_have_account_register">Dont have an account? <u>Register</u></string>
 </resources>

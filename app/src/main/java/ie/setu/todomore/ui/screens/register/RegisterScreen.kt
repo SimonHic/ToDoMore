@@ -38,6 +38,7 @@ import ie.setu.todomore.ui.components.general.NormalTextComponent
 import ie.setu.todomore.ui.components.general.PasswordTextFieldComponent
 import ie.setu.todomore.ui.components.general.ShowLoader
 import ie.setu.todomore.R
+import ie.setu.todomore.navigation.Login
 
 @Composable
 fun RegisterScreen(
@@ -111,6 +112,12 @@ fun RegisterScreen(
                     isEnabled = registerViewModel.allValidationsPassed.value
                 )
                 Spacer(modifier = Modifier.height(20.dp))
+                ClickableLoginTextComponent(
+                    tryingToLogin = true,
+                    onTextSelected = {
+                        navController.navigate(Login.route)
+                    }
+                )
             }
         }
 

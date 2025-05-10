@@ -25,9 +25,11 @@ import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.google.firebase.auth.FirebaseAuth
 import ie.setu.todomore.data.TodoModel
 import ie.setu.todomore.data.Priority
 import ie.setu.todomore.data.TodoJSONStore
+import ie.setu.todomore.ui.components.general.TopAppBarProvider
 
 /*val sampleTasks = mutableStateListOf(
     TodoModel(id = 1, title = "Buy Games", priority = Priority.HIGH),
@@ -45,7 +47,17 @@ fun TaskListScreen(navController: NavController){
     val tasks = remember { mutableStateListOf<TodoModel>().apply { addAll(todoStore.findAll()) }}
 
     Column(modifier = Modifier.padding(16.dp)) {
-        Text(text = "Task List", style = MaterialTheme.typography.headlineMedium)
+
+        TopAppBarProvider(
+            navController = navController,
+            currentScreen = ie.setu.todomore.navigation.TaskList,
+            canNavigateBack = false,
+            email = FirebaseAuth.getInstance().currentUser?.email?:"",
+            name = FirebaseAuth.getInstance().currentUser?.displayName?:"",
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        //Text(text = "Task List", style = MaterialTheme.typography.headlineMedium)
 
         if (tasks.isEmpty()) {
             Text(text = "No tasks available", modifier = Modifier.padding(top = 20.dp))

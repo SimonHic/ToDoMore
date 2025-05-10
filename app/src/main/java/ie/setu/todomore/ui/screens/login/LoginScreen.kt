@@ -34,7 +34,9 @@ import ie.setu.todomore.R
 import ie.setu.todomore.firebase.auth.Response
 import ie.setu.todomore.navigation.TaskList
 import ie.setu.todomore.navigation.Login
+import ie.setu.todomore.navigation.Register
 import ie.setu.todomore.ui.components.general.ButtonComponent
+import ie.setu.todomore.ui.components.general.ClickableLoginTextComponent
 import ie.setu.todomore.ui.components.general.GoogleSignInButtonComponent
 import ie.setu.todomore.ui.components.general.HeadingLogoComponent
 import ie.setu.todomore.ui.components.general.HeadingTextComponent
@@ -118,6 +120,12 @@ fun LoginScreen(
                 GoogleSignInButtonComponent {
                     loginViewModel.signInWithGoogleCredentials(context)
                 }
+
+                Spacer(modifier = Modifier.height(10.dp))
+                ClickableLoginTextComponent (
+                    tryingToLogin = false,
+                    onTextSelected = {navController.navigate(Register.route)}
+                    )
             }
         }
     }
