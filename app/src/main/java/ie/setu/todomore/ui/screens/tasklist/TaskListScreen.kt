@@ -57,11 +57,12 @@ fun TaskListScreen(navController: NavController){
         }
     }
     val tasks = viewModel.uiTasks.collectAsState().value
-    val isClearButtonEnabled by remember(viewModel.uiTasks.collectAsState()){
+    val isClearButtonEnabled = tasks.any { it.markForDel }
+    /*val isClearButtonEnabled by remember(viewModel.uiTasks.collectAsState()){
         derivedStateOf {
             viewModel.uiTasks.value.any{it.markForDel}
         }
-    }
+    }*/
     /*val todoStore = remember { TodoJSONStore(context) }
     val tasks = remember { mutableStateListOf<TodoModel>().apply { addAll(todoStore.findAll()) }}
 */
