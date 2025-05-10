@@ -20,6 +20,8 @@ import com.google.firebase.auth.FirebaseAuth
 import ie.setu.todomore.navigation.Login
 import ie.setu.todomore.navigation.TaskList
 import androidx.compose.runtime.LaunchedEffect
+import androidx.navigation.compose.currentBackStackEntryAsState
+import ie.setu.todomore.navigation.Register
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -37,6 +39,9 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ToDoMoreApp(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
+    // Access the current route dynamically
+    val currentBackStackEntry = navController.currentBackStackEntryAsState()
+    val currentDestination = currentBackStackEntry.value?.destination?.route
 
     // Only run once per composition
     LaunchedEffect(key1 = true) {
@@ -46,7 +51,13 @@ fun ToDoMoreApp(modifier: Modifier = Modifier) {
 
     Scaffold(
         modifier = modifier,
-        bottomBar = { BottomNavBar(navController)},
+        //If the current routes are either Login or Register hide the bottom nav bar else show it
+        bottomBar = {
+            if(currentDestination != Login.route && currentDestination != Register.route){
+                BottomNavBar(navController)
+            }
+
+        },
         content = { paddingValues ->
             AppNavGraph(
                 navController = navController,
