@@ -17,6 +17,7 @@ import ie.setu.todomore.ui.screens.taskedit.TaskEditScreen
 import ie.setu.todomore.ui.screens.tasklist.TaskListScreen
 import ie.setu.todomore.ui.screens.login.LoginScreen
 import ie.setu.todomore.ui.screens.register.RegisterScreen
+import ie.setu.todomore.ui.screens.streaks.StreaksScreen
 
 @Composable
 fun AppNavGraph(navController: NavHostController, startDestination: String, modifier: Modifier = Modifier){
@@ -42,6 +43,9 @@ fun AppNavGraph(navController: NavHostController, startDestination: String, modi
         }
         composable(Register.route){
             RegisterScreen(navController = navController)
+        }
+        composable("streaks"){
+            StreaksScreen(navController = navController)
         }
     }
 }

@@ -5,6 +5,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Timelapse
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -34,10 +35,10 @@ fun BottomNavBar(navController: NavController){
             onClick = {navController.navigate("taskList")}
         )
         NavigationBarItem(
-            icon = { Icon(Icons.Filled.Info, contentDescription = "About", tint = Color.White)},
-            label = {Text("About", color = Color.White)},
+            icon = { Icon(Icons.Filled.Timelapse, contentDescription = "Streak", tint = Color.White)},
+            label = {Text("Streaks", color = Color.White)},
             selected = false,
-            onClick = {navController.navigate("about")}
+            onClick = {navController.navigate("streaks")}
         )
     }
 }

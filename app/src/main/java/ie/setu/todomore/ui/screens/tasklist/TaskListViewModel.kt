@@ -72,7 +72,14 @@ class TaskListViewModel @Inject constructor(
     }
 
     fun clearMarkedTasks(){
+        val userEmail = authService.email
+        if(userEmail.isNullOrBlank()) return
+
         viewModelScope.launch {
+            val completedCount = markedTasks.size
+
+            // Call streak logic before deleting the task(s)
+            repository.updateStreakOnClear(userEmail, completedCount)
             markedTasks.forEach {taskId ->
                 repository.delete(authService.email!!, taskId)
             }

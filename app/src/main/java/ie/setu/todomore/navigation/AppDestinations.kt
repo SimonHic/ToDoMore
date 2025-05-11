@@ -58,6 +58,12 @@ object Register : AppDestination {
     override val route = "register"
 }
 
-val bottomAppBarDestinations = listOf(TaskCreate, TaskList, About)
+object Streaks : AppDestination {
+    override val icon = Icons.Filled.AccountCircle
+    override val label = "Streaks"
+    override val route = "streaks"
+}
+
+val bottomAppBarDestinations = listOf(TaskCreate, TaskList, Streaks)
 val userSignedOutDestinations = listOf(Login, Register)
 val allDestinations = listOf(TaskList, TaskCreate, About, TaskEdit, Login, Register)
