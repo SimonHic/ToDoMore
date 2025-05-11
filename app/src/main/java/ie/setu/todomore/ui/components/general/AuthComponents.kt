@@ -102,10 +102,8 @@ fun GoogleSignInButtonComponent(onButtonClicked: () -> Unit) {
                 .background(
                     brush = Brush.horizontalGradient(
                         colors = listOf(
-                            Color.Blue,
-                            Color.Cyan
-                            // gStartGradientColor,
-                            // gEndGradientColor,
+                            Color(0xFF6650A4),
+                            Color(0xFFD0BCFF)
                         )
                     ),
                     shape = RoundedCornerShape(50.dp)
@@ -402,10 +400,8 @@ fun ButtonComponent(value: String, onButtonClicked: () -> Unit, isEnabled: Boole
                 .background(
                     brush = Brush.horizontalGradient(
                         colors = listOf(
-                            Color.Blue,
-                            Color.Cyan
-                            // endGradientColor,
-                            // startGradientColor,
+                            Color(0xFF6650A4),
+                            Color(0xFFD0BCFF)
                         )
                     ),
                     shape = RoundedCornerShape(50.dp)

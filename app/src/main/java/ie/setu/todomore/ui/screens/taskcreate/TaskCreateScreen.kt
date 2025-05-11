@@ -12,6 +12,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,41 +32,50 @@ import ie.setu.todomore.ui.components.general.TopAppBarProvider
 
 // Screen to allow suers to create tasks
 @Composable
-fun TaskCreateScreen(navController: NavController){
+fun TaskCreateScreen(navController: NavController) {
     //Text(text = "Task Create Screen")
-    var title by remember {mutableStateOf("")}
-    var selectedPriority by remember { mutableStateOf(Priority.MEDIUM)}
+    var title by remember { mutableStateOf("") }
+    var selectedPriority by remember { mutableStateOf(Priority.MEDIUM) }
     val context = LocalContext.current
     val viewModel: TaskCreateViewModel = hiltViewModel()
     //val todoStore = remember { TodoJSONStore(context) }
-    val navigateUp: () -> Unit = {navController.navigateUp()}
+    val navigateUp: () -> Unit = { navController.navigateUp() }
 
-    Column(modifier = Modifier.padding(16.dp)){
-        TopAppBarProvider(
-            navController = navController,
-            currentScreen = TaskCreate,
-            canNavigateBack = true,
-            email = FirebaseAuth.getInstance().currentUser?.email?:"",
-            name = FirebaseAuth.getInstance().currentUser?.displayName?:"",
-            navigateUp = navigateUp
-        )
+    Scaffold(
+        topBar = {
+            TopAppBarProvider(
+                navController = navController,
+                currentScreen = TaskCreate,
+                canNavigateBack = true,
+                email = FirebaseAuth.getInstance().currentUser?.email ?: "",
+                name = FirebaseAuth.getInstance().currentUser?.displayName ?: "",
+                navigateUp = navigateUp
+            )
+        }
+    ) { paddingValues ->
 
-        Text(text = "Create New Task", style = MaterialTheme.typography.headlineMedium)
+        Column(modifier = Modifier.padding(paddingValues).padding(16.dp)) {
 
-        // Task title input
-        OutlinedTextField(
-            value = title,
-            onValueChange = {title = it},
-            label = {Text("Task Title")},
-            modifier = Modifier.fillMaxWidth()
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(text = "Create New Task", style = MaterialTheme.typography.headlineMedium)
 
-        )
-        Spacer(modifier = Modifier.height(16.dp))
+            // Task title input
+            OutlinedTextField(
+                value = title,
+                onValueChange = { title = it },
+                label = { Text("Task Title") },
+                modifier = Modifier.fillMaxWidth()
 
-        // Priority Handling
-        Text(text = "Select Priority Level:")
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly){
-            //Priority.values().forEach { priority ->
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Priority Handling
+            Text(text = "Select Priority Level:")
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                //Priority.values().forEach { priority ->
                 Button(
                     onClick = {
                         selectedPriority = Priority.LOW
@@ -102,27 +112,29 @@ fun TaskCreateScreen(navController: NavController){
                     Text("High")
                 }
 
-        }
-        Spacer(modifier = Modifier.height(16.dp))
+            }
+            Spacer(modifier = Modifier.height(16.dp))
 
-        Button(
-            onClick = {
-                if (title.isNotBlank()){
-                    val newTask = TodoModel(title = title, priority = selectedPriority)
-                    viewModel.insert(newTask){
-                        navController.popBackStack()
-                    //navController.navigate("tasklist")
-                    }
-                    /*todoStore.create(TodoModel(title = title, priority = selectedPriority))
+            Button(
+                onClick = {
+                    if (title.isNotBlank()) {
+                        val newTask = TodoModel(title = title, priority = selectedPriority)
+                        viewModel.insert(newTask) {
+                            navController.popBackStack()
+                            //navController.navigate("tasklist")
+                        }
+                        /*todoStore.create(TodoModel(title = title, priority = selectedPriority))
                     navController.navigate("tasklist")*/
-                } else{
-                    Toast.makeText(context, "Please enter a task title!!", Toast.LENGTH_SHORT).show()
-                }
-            },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = title.isNotBlank()
-        ){
-            Text("Create Task")
+                    } else {
+                        Toast.makeText(context, "Please enter a task title!!", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = title.isNotBlank()
+            ) {
+                Text("Create Task")
+            }
         }
     }
 }

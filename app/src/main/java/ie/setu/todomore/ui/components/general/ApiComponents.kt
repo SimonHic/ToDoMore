@@ -1,5 +1,6 @@
 package ie.setu.todomore.ui.components.general
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -118,7 +119,7 @@ fun ShowRefresh(onClick: ((Unit) -> Unit)) {
     }
 }
 
-@Composable
+/*@Composable
 fun ShowLoader(message: String) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -129,6 +130,34 @@ fun ShowLoader(message: String) {
         Text(message,
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp)
+    }
+}*/
+
+@Composable
+fun ShowLoader(message: String){
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment =  Alignment.Center
+    ){
+        Box(
+            modifier = Modifier.padding(16.dp).background(
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
+                shape = MaterialTheme.shapes.medium
+            )
+                .padding(
+                    horizontal = 24.dp, vertical = 16.dp),
+            contentAlignment = Alignment.Center
+        ){
+            Column(horizontalAlignment = Alignment.CenterHorizontally){
+                CircularProgressIndicator()
+                Text(
+                    text = message,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
+        }
     }
 }
 

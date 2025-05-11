@@ -11,11 +11,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.FlashOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -43,6 +45,8 @@ import ie.setu.todomore.ui.components.general.TopAppBarProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontWeight
+import ie.setu.todomore.ui.theme.Purple80
+import ie.setu.todomore.ui.theme.PurpleGrey40
 
 /*val sampleTasks = mutableStateListOf(
     TodoModel(id = 1, title = "Buy Games", priority = Priority.HIGH),
@@ -54,93 +58,112 @@ import androidx.compose.ui.text.font.FontWeight
 
 // Screen to showcase all tasks added
 @Composable
-fun TaskListScreen(navController: NavController){
+fun TaskListScreen(navController: NavController) {
     val context = LocalContext.current
     val viewModel: TaskListViewModel = hiltViewModel()
     val currentUserEmail = FirebaseAuth.getInstance().currentUser?.email
 
     // Everytime Tasklist screen loads, get all tasks
     LaunchedEffect(true) {
-        if(!currentUserEmail.isNullOrBlank()){
+        if (!currentUserEmail.isNullOrBlank()) {
             viewModel.getTasks()
         }
     }
     val allTasks = viewModel.uiTasks.collectAsState().value
     val focusMode = viewModel.isFocusMode.value
-    val tasks = if(focusMode){
+    val tasks = if (focusMode) {
         allTasks.filter { it.priority == Priority.HIGH }
-    } else{
+    } else {
         allTasks
     }
     val isClearButtonEnabled = tasks.any { it.markForDel }
 
-    Column(modifier = Modifier.padding(16.dp)) {
-
-        TopAppBarProvider(
-            navController = navController,
-            currentScreen = ie.setu.todomore.navigation.TaskList,
-            canNavigateBack = false,
-            email = FirebaseAuth.getInstance().currentUser?.email?:"",
-            name = FirebaseAuth.getInstance().currentUser?.displayName?:"",
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
-        ){
-            Icon(
-                imageVector = Icons.Filled.FlashOn,
-                contentDescription = "Focus Mode Icon",
-                tint = MaterialTheme.colorScheme.tertiary
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("Focus Mode", style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold))
-            Spacer(modifier = Modifier.width(12.dp))
-            Switch(
-                checked = viewModel.isFocusMode.value,
-                onCheckedChange = {viewModel.isFocusMode.value = it},
-                colors = SwitchDefaults.colors(
-                    checkedTrackColor = MaterialTheme.colorScheme.inversePrimary,
-                    checkedThumbColor = MaterialTheme.colorScheme.tertiary)
+    Scaffold(
+        topBar = {
+            TopAppBarProvider(
+                navController = navController,
+                currentScreen = ie.setu.todomore.navigation.TaskList,
+                canNavigateBack = false,
+                email = FirebaseAuth.getInstance().currentUser?.email ?: "",
+                name = FirebaseAuth.getInstance().currentUser?.displayName ?: "",
             )
         }
+    ) { paddingValues ->
 
-        Spacer(modifier = Modifier.height(16.dp))
+        //Spacer(modifier = Modifier.height(16.dp))
+        Column(modifier = Modifier.padding(paddingValues).padding(16.dp)) {
 
-        if (tasks.isEmpty()) {
-            val message = if(focusMode){"No High-Priority tasks to focus on."
-            } else{
-                "No tasks available"
-            }
-            Text(text = message, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(top = 20.dp))
-        } else {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                tasks.forEach { task ->
-                    TaskItem(
-                        task = task,
-                        onClick = { navController.navigate("taskEdit/${task._id}") },
-                        onLongClick = {
-                            viewModel.toggleMarkForDeletion(task._id)
-                        }
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.FlashOn,
+                    contentDescription = "Focus Mode Icon",
+                    tint = MaterialTheme.colorScheme.tertiary
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    "Focus Mode",
+                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Switch(
+                    checked = viewModel.isFocusMode.value,
+                    onCheckedChange = { viewModel.isFocusMode.value = it },
+                    colors = SwitchDefaults.colors(
+                        checkedTrackColor = MaterialTheme.colorScheme.inversePrimary,
+                        checkedThumbColor = MaterialTheme.colorScheme.tertiary
                     )
+                )
+            }
+            // Clear and Remove Completed Tasks Button
+            Button(
+                onClick = {
+                    viewModel.clearMarkedTasks()
+                },
+                enabled = isClearButtonEnabled,
+                modifier = Modifier.fillMaxWidth()
+            ){
+             Icon(
+                 imageVector = Icons.Filled.Delete,
+                 contentDescription = "Clear Completed",
+                 modifier = Modifier.padding(end = 8.dp)
+             )
+                Text("Clear Completed")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            if (tasks.isEmpty()) {
+                val message = if (focusMode) {
+                    "No High-Priority tasks to focus on."
+                } else {
+                    "No tasks available"
+                }
+                Text(
+                    text = message,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(top = 20.dp)
+                )
+            } else {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    tasks.forEach { task ->
+                        TaskItem(
+                            task = task,
+                            onClick = { navController.navigate("taskEdit/${task._id}") },
+                            onLongClick = {
+                                viewModel.toggleMarkForDeletion(task._id)
+                            }
+                        )
+                    }
                 }
             }
-        }
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        // Clear and Remove Completed Tasks Button
-        Button(
-            onClick = {
-                viewModel.clearMarkedTasks()},
-            enabled = isClearButtonEnabled,
 
-            modifier = Modifier.fillMaxWidth(),
-
-            // Only enabled if tasks are marked, defaulted to false
-            //enabled = tasks.any {it.markForDel}
-        ){
-            Text("Clear Completed")
         }
     }
 }
@@ -148,6 +171,11 @@ fun TaskListScreen(navController: NavController){
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TaskItem(task: TodoModel, onClick: () -> Unit, onLongClick: () -> Unit) {
+    val backgroundColor = if(task.markForDel){
+        PurpleGrey40.copy(alpha = 0.5f)
+    } else{
+        Purple80
+    }
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -156,7 +184,11 @@ fun TaskItem(task: TodoModel, onClick: () -> Unit, onLongClick: () -> Unit) {
                 onClick = onClick,
                 onLongClick = onLongClick
             ),
-        shape = MaterialTheme.shapes.medium
+        shape = MaterialTheme.shapes.medium,
+        colors = androidx.compose.material3.CardDefaults.cardColors(
+            containerColor = backgroundColor
+        ),
+        border = androidx.compose.material3.CardDefaults.outlinedCardBorder()
     ){
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
