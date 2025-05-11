@@ -29,6 +29,7 @@ class TaskListViewModel @Inject constructor(
     var errorState = mutableStateOf(Exception())
     private val _markedForDeletion = mutableListOf<String>()
     val markedTasks: List<String> get() =_markedForDeletion
+    var isFocusMode = mutableStateOf(false)
 
     init {
         getTasks()

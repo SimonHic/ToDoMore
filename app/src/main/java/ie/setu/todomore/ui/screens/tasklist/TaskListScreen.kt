@@ -4,13 +4,20 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FlashOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -34,6 +41,8 @@ import ie.setu.todomore.data.Priority
 //import ie.setu.todomore.data.TodoJSONStore
 import ie.setu.todomore.ui.components.general.TopAppBarProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.font.FontWeight
 
 /*val sampleTasks = mutableStateListOf(
     TodoModel(id = 1, title = "Buy Games", priority = Priority.HIGH),
@@ -56,16 +65,15 @@ fun TaskListScreen(navController: NavController){
             viewModel.getTasks()
         }
     }
-    val tasks = viewModel.uiTasks.collectAsState().value
+    val allTasks = viewModel.uiTasks.collectAsState().value
+    val focusMode = viewModel.isFocusMode.value
+    val tasks = if(focusMode){
+        allTasks.filter { it.priority == Priority.HIGH }
+    } else{
+        allTasks
+    }
     val isClearButtonEnabled = tasks.any { it.markForDel }
-    /*val isClearButtonEnabled by remember(viewModel.uiTasks.collectAsState()){
-        derivedStateOf {
-            viewModel.uiTasks.value.any{it.markForDel}
-        }
-    }*/
-    /*val todoStore = remember { TodoJSONStore(context) }
-    val tasks = remember { mutableStateListOf<TodoModel>().apply { addAll(todoStore.findAll()) }}
-*/
+
     Column(modifier = Modifier.padding(16.dp)) {
 
         TopAppBarProvider(
@@ -77,10 +85,35 @@ fun TaskListScreen(navController: NavController){
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        //Text(text = "Task List", style = MaterialTheme.typography.headlineMedium)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+        ){
+            Icon(
+                imageVector = Icons.Filled.FlashOn,
+                contentDescription = "Focus Mode Icon",
+                tint = MaterialTheme.colorScheme.tertiary
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Focus Mode", style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold))
+            Spacer(modifier = Modifier.width(12.dp))
+            Switch(
+                checked = viewModel.isFocusMode.value,
+                onCheckedChange = {viewModel.isFocusMode.value = it},
+                colors = SwitchDefaults.colors(
+                    checkedTrackColor = MaterialTheme.colorScheme.inversePrimary,
+                    checkedThumbColor = MaterialTheme.colorScheme.tertiary)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         if (tasks.isEmpty()) {
-            Text(text = "No tasks available", modifier = Modifier.padding(top = 20.dp))
+            val message = if(focusMode){"No High-Priority tasks to focus on."
+            } else{
+                "No tasks available"
+            }
+            Text(text = message, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(top = 20.dp))
         } else {
             Column(modifier = Modifier.fillMaxWidth()) {
                 tasks.forEach { task ->
@@ -90,12 +123,6 @@ fun TaskListScreen(navController: NavController){
                         onLongClick = {
                             viewModel.toggleMarkForDeletion(task._id)
                         }
-                        /*onLongClick = {
-                            todoStore.toggleTaskDeletion(task._id)
-                            val index = tasks.indexOfFirst { it._id == task._id }
-                            if (index != -1)
-                                tasks[index] = tasks[index].copy(markForDel = !tasks[index].markForDel)
-                        }*/
                     )
                 }
             }
@@ -107,10 +134,7 @@ fun TaskListScreen(navController: NavController){
             onClick = {
                 viewModel.clearMarkedTasks()},
             enabled = isClearButtonEnabled,
-            /*onClick = {
-                todoStore.deleteMarked()
-                tasks.removeAll{it.markForDel}
-            },*/
+
             modifier = Modifier.fillMaxWidth(),
 
             // Only enabled if tasks are marked, defaulted to false
